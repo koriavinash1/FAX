@@ -1,0 +1,83 @@
+base:
+  run: 1 # random run number
+  random_seed: 2023 # set random seed
+  name: FAX-default #Name of an exp
+  M: 1 # Monte Carlo sampling for valid and test sets
+
+
+quantizer:
+  num_embeddings: 64 # total number of discrete symbols in a codebook
+  nfeatures: 64 # total number of sampled discrete symbols for every image, depends on feature dimension
+  embedding_dim: 128 # dimension of each concept vector
+  beta: 0.9 # weightage for commitment loss term 
+  quantize: spatial # quantize along channels or spatially, allowed flags: ['channel', 'spatial']
+  codebook_dim: 64 # number channels for quantization
+  gumble: false # use gumble codebook for sampling
+  cosine: false # use cosine codebook for sampling, by default euclidian distance is used for sampling
+  temperature: 1.0 # default temperature for gumbel softmax sampler
+  kld_scale: 1.0 # kl scaling term in case of gumble sampling 
+  usage_threshold: 0.000001 # use threshold for codebook resetting
+  decay: 0.8 # decay rate for codebook mean convergance
+  epsilon: 0.00001 # threshold for cb reset condition
+  use_cb_multiplicity: true # if true uses independent codebooks for each class 
+
+
+player:
+  rnn_hidden: 256 # hidden size of the rnn
+  rnn_input_size: 256 # input size of the rnn
+  rnn_type: GRU # type of sequential network, allowed types: 'GRU, RNN, LSTM'
+  std: 1.0 # gaussian policy standard deviation
+
+dataset:
+  n_class: 3 # no. of classes in the dataset
+  num_workers: 16 # no. of subprocesses to use for data loading
+  random_split: true # Whether to randomly split the train and valid indices
+  include_classes: all # include subset of classes for debate
+  feature_extractor: vanilla # considered network for feature extraction, allowed types: 'vanilla, resnet18, densent121'
+  img_size: 32 # size of extracted patch at highest res
+  data_root: 
+
+
+training:
+  is_train: true # training or evaluation step
+  batch_size: 32 # batchsize used for training
+  epochs: 15 # totoal number of epochs used for training
+  patience: 5 # no. epochs to check for validation score improvement
+  momentum: 0.5 # Nesterov momentum value
+  min_lr: 0.00001 # minimum learning rate
+  saturate_epoch: 150 # Epoch at which decayed lr will reach min_lr
+  softmax_temperature: 1.0 # Temperature for softmax distribution for sampling arguments')
+
+
+plotting:
+  plot_name: VX-test # prefix for a generated plots
+  plot_freq: 10 # plot every n batches
+  plot_num_imgs: 10 # How many imgs to plot, if < 0 plots all images in a batch
+  plot_threshold: 98.45 # Percentile value between (0, 100) for thresholding in generating dissection heatmap 
+
+
+others:
+  use_gpu: true # Whether to run on the GPU
+  device: 0 # GPU device to use
+  best: false # load best model of the last saved model
+  log_dir: LOGS/MCB-VXs # root directory for logging
+  use_wandb: true # use wandb for logging
+  resume: false # resume training from last checkpoint, will start from scratch if ckpt not available
+  print_freq: 10 # How frequently to print training details
+
+
+debate:
+  nagents: 2 # no. debating agents
+  reward_weightage: 1.0 #reward weightage in policy gradient
+  rl_weightage: 1.0 # policy gradient weightage during supportive training
+  narguments: -1 # no. of arguments in a debate, if < 0, the dynamic debate termination is selected
+  termination: cosine # type of termination function, allowed 'cosine, nmi'
+  termination_threshold: 0.1 # threshold for the selected termination method
+  debate_lr: 0.001 # debate learning rate
+  player_lr: 0.001 # player learning rate
+  random_player: false # if true, player 1's (supporting player's) parameters wont be updated
+  use_mean_dc: false # if true uses mean of both classifier's logporb for debate outcome, else uses only supporter's logprob with combined hidden state
+  lambda2: 0.0 # irreducability coefficient in rewards
+  lambda3: 0.0 # repetability coefficient in rewards
+  lambda4: 0.0 # persuation monotonicity coefficient in rewards
+  lambda5: 0.0 # persuation strength coefficient in rewards

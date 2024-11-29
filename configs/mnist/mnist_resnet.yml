@@ -1,0 +1,31 @@
+defaults:
+  - ../_base_.yml
+
+base:
+  name: mnist
+
+dataset:
+  feature_extractor: resnet
+  img_size: 32
+  n_class: 10
+  data_root: ../../datasets/MNIST
+
+player:
+  rnn_hidden: 128
+  rnn_input: 128
+
+quantizer:
+  num_embeddings: 32
+  nfeatures: 16
+  quantize: spatial
+  embedding_dim: 512  
+  codebook_dim: 16
+  use_cb_multiplicity: true 
+  gumble: true
+
+debate:
+  nagents: 2
+  narguments: 6
+
+others:
+  log_dir: ../LOGS/MCB-VXs/MNIST/ResNet 

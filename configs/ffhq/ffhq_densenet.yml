@@ -1,0 +1,31 @@
+defaults:
+  - ../_base_.yml
+
+base:
+  name: ffhq
+
+dataset:
+  feature_extractor: densenet121
+  img_size: 128
+  n_class: 2
+  data_root: ../../datasets/FFHQ/data
+
+player:
+  rnn_hidden: 128
+  rnn_input: 128
+
+quantizer:
+  num_embeddings: 32
+  nfeatures: 16
+  quantize: spatial
+  embedding_dim: 1024 # 64  
+  codebook_dim: 16
+  use_cb_multiplicity: true 
+  gumble: true
+
+debate:
+  nagents: 2
+  narguments: 6
+
+others:
+  log_dir: ../LOGS/MCB-VXs/FFHQ/Densenet 
